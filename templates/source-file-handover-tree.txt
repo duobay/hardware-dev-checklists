@@ -1,0 +1,142 @@
+SAMPLE: SOURCE-FILE HANDOVER PACKAGE (directory tree)
+=====================================================
+Duobay, a service of Aximora Labs Inc.
+Hypothetical project: "T1", an LTE-M / GNSS asset tracker for a US client.
+This is an illustrative example of the structure we deliver. It is not a real
+client project. File names, revisions and tools are examples only.
+
+How to read it
+--------------
+- One top-level folder per gate. Each gate folder is delivered when that gate
+  is paid, and the files in it are assigned to you at that point.
+- Later gates contain the full, current design. Earlier gate folders stay in the
+  package so you keep the history.
+- Firmware lives in a Git repository in YOUR organization (GitHub, GitLab or
+  Bitbucket). The "firmware/" entries below show what that repository contains
+  at the tagged release for the gate.
+- Every native source file is included, not only exports. Exports (PDF, Gerber,
+  STEP) are there so anyone can review without the CAD tool.
+- MANIFEST.sha256 lists a SHA-256 hash for every file so you can verify the
+  package arrived complete.
+
+T1_handover/
+|-- README.md                         What is in the package, tool versions, contacts
+|-- MANIFEST.sha256                   SHA-256 of every file in the package
+|-- ASSIGNMENT_RECORD.md              Which gate, which invoice, date paid, files covered
+|
+|-- G0_feasibility/
+|   |-- T1_system-architecture_r1.pdf
+|   |-- T1_system-architecture_r1.docx           Editable source
+|   |-- T1_BOM-estimate_r1.xlsx                   Costed BOM, alternates, landed DDP estimate
+|   |-- T1_certification-path_r1.md              FCC rule parts, module grant review, PTCRB / carrier plan
+|   |-- T1_module-trade-study_r1.xlsx             Candidate LTE-M / Cat-1bis modules, origin, Covered List check
+|   |-- T1_risk-register_r1.xlsx
+|   `-- T1_G1-quote_r1.pdf                        Fixed quote for the next gate
+|
+|-- G1_works-like/
+|   |-- hardware/
+|   |   |-- T1-WL_carrier-board_rA.kicad_pro      Native CAD project (KiCad or Altium, per project)
+|   |   |-- T1-WL_carrier-board_rA.kicad_sch
+|   |   |-- T1-WL_carrier-board_rA.kicad_pcb
+|   |   |-- libraries/                            Symbols and footprints used, so the project opens standalone
+|   |   |-- T1-WL_schematic_rA.pdf
+|   |   `-- T1-WL_BOM_rA.csv
+|   |-- firmware/                                 Repository snapshot at tag g1-works-like
+|   |-- test/
+|   |   |-- T1-WL_power-profile_rA.csv            Measured current by state (sleep, GNSS fix, LTE TX)
+|   |   |-- T1-WL_power-profile_rA.md             Method, instruments, battery-life estimate
+|   |   `-- T1-WL_rf-sanity_rA.md                 Conducted / radiated sanity checks, not a compliance test
+|   `-- G1_recommendation.md                      Go / adjust / stop, with reasons
+|
+|-- G2_EVT/
+|   |-- electrical/
+|   |   |-- T1-EVT_main_rB.kicad_pro
+|   |   |-- T1-EVT_main_rB.kicad_sch
+|   |   |-- T1-EVT_main_rB.kicad_pcb
+|   |   |-- libraries/
+|   |   |-- T1-EVT_schematic_rB.pdf
+|   |   |-- fabrication/
+|   |   |   |-- gerbers/                          RS-274X, one file per layer
+|   |   |   |-- drill/                            Excellon drill files
+|   |   |   |-- T1-EVT_stackup_rB.pdf             Layer stackup, impedance targets
+|   |   |   |-- T1-EVT_fab-notes_rB.pdf
+|   |   |   `-- T1-EVT_ipc-netlist_rB.ipc
+|   |   |-- assembly/
+|   |   |   |-- T1-EVT_pick-place_rB.csv
+|   |   |   |-- T1-EVT_assembly-drawing_rB.pdf
+|   |   |   `-- T1-EVT_paste-stencil_rB.gbr
+|   |   `-- T1-EVT_BOM_rB.xlsx                    MPNs, approved alternates, lifecycle status
+|   |-- antenna/
+|   |   |-- T1-EVT_antenna-matching_rB.md         Matching network values, VNA plots
+|   |   `-- T1-EVT_ota-pre-scan_rB.pdf            TRP / TIS pre-scan, if run at this gate
+|   |-- mechanical/
+|   |   |-- T1-EVT_enclosure_rB.step
+|   |   |-- T1-EVT_enclosure_rB_native/           Native CAD files (SolidWorks / Fusion / Creo)
+|   |   |-- T1-EVT_enclosure-drawing_rB.pdf       Tolerances, materials, finishes
+|   |   `-- T1-EVT_gasket-and-label_rB.dxf
+|   |-- firmware/                                 Repository snapshot at tag g2-evt
+|   |   |-- app/                                  Application source
+|   |   |-- boot/                                 Bootloader configuration (e.g. MCUboot)
+|   |   |-- boards/                               Board definition for T1-EVT
+|   |   |-- tests/                                Unit and hardware-in-the-loop tests
+|   |   |-- tools/provisioning/                   Scripts that load device identity at the test station
+|   |   |-- docs/BUILD.md                         Toolchain versions, how to build and sign
+|   |   |-- docs/PROTOCOL.md                      Device-to-cloud protocol (MQTT topics / payloads)
+|   |   |-- docs/OTA.md                           How to build, sign and roll out an update
+|   |   |-- sbom/T1-fw-g2-evt.cdx.json            SBOM, CycloneDX JSON
+|   |   `-- sbom/T1-fw-g2-evt.csv                 Same SBOM, spreadsheet view
+|   |-- test/
+|   |   |-- T1-EVT_test-report_rB.pdf
+|   |   |-- T1-EVT_bring-up-log_rB.md
+|   |   `-- raw-data/
+|   `-- G2_open-issues.xlsx
+|
+|-- G3_DVT-PVT/
+|   |-- electrical/                               Same structure as G2, revision C or later
+|   |-- mechanical/
+|   |   |-- tooling/
+|   |   |   |-- T1_mold-drawings_rC.pdf           As-built mold drawings from the toolmaker
+|   |   |   |-- T1_T1-sample-report.pdf           First-shot sample inspection
+|   |   |   `-- T1_tooling-register.xlsx          Every mold and fixture: ID, location, owner, cavity count
+|   |   `-- T1-DVT_enclosure_rC.step
+|   |-- firmware/                                 Repository snapshot at tag g3-pvt (release candidate)
+|   |-- reliability/
+|   |   |-- T1-DVT_drop-test.pdf
+|   |   |-- T1-DVT_temp-cycle.pdf
+|   |   |-- T1-DVT_ingress-ip67.pdf               Only if the IP rating is in scope
+|   |   `-- T1-DVT_battery-UN38.3-summary.pdf     Supplier test summary for the cell / pack
+|   |-- certification/
+|   |   |-- FCC/                                  Test reports, grant, label artwork; grantee is your company
+|   |   |-- PTCRB/                                If applicable
+|   |   |-- carrier/                              Carrier approval letters, if applicable
+|   |   `-- T1_certification-index.md             Which report covers which SKU and firmware version
+|   |-- production/
+|   |   |-- T1_production-test-procedure_rC.pdf
+|   |   |-- T1_test-fixture-design/               Fixture CAD and wiring
+|   |   |-- T1_test-station-software/             Source for the production test station
+|   |   |-- T1_work-instructions_rC.pdf
+|   |   |-- T1_BOM_locked_rC.xlsx                 Locked BOM with second sources
+|   |   `-- T1_yield-report_PVT.xlsx
+|   `-- G3_build-records/                         Serial numbers, test results per unit
+|
+`-- G4_mass-production/
+    |-- lots/
+    |   `-- LOT-YYYYWW-NN/                        One folder per shipped lot
+    |       |-- QC_report.pdf                     Incoming, in-process and outgoing QC
+    |       |-- serials_and_test-results.csv
+    |       `-- firmware-version_and_SBOM.cdx.json
+    |-- ECO/                                      Engineering change orders, approved by you
+    |-- EOL-and-lead-time-alerts.md
+    `-- cost-down-reviews/
+
+What is NOT in the package
+--------------------------
+- Third-party software and tools under their own licenses (chip vendor SDKs,
+  modem firmware, CAD tools). They are listed in the SBOM with name, version and
+  license. We cannot assign what we do not own.
+- Our own pre-existing reference designs and libraries, if any were reused.
+  Those are licensed to you for your product as set out in the MSA; the files
+  you need to build, modify and manufacture the product are still included.
+
+SAMPLE ONLY. The signed agreement and each gate's Statement of Work define the
+actual deliverables for a project.
